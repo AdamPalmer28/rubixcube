@@ -28,24 +28,15 @@ class SoftwareRender:
         self.projection = projection(self) # projection calcs
 
         pg.font.init()
-        self.object = Object_3Dspace(self) # create cube object
-
-        translate_val = [1,0.5,0.2]
-        self.object.translate(translate_val)
-        #self.object.origin()
-
-        # object axes
-        self.axes = Axes(self)
-        object_axes = [val + 0.5 for val in translate_val]
-        self.axes.translate(object_axes)
 
         # world axes
         self.world_axes = Axes(self)
         self.world_axes.movement_flag = False # World axes cannot move or rotate
         self.world_axes.scale(2.5)
-        self.world_axes.translate([0.0001, 0.0001, 0.0001])
+        #self.world_axes.translate([0.0001, 0.0001, 0.0001])
 
-
+        # rubix cube
+        self.rubix = rubix_cube(self, n = 3)
 
     def draw(self):
         # collective draw function
@@ -53,15 +44,13 @@ class SoftwareRender:
 
         self.world_axes.draw() # world axes
 
-        self.axes.draw() # object axes
-        self.object.draw() # draw objects
+        self.rubix.draw()
 
     def run(self):
         "[Driver function] run app/program"
         while True:
             self.draw()
             
-            #[exit() for i in pg.event.get() if i.type == pg.QUIT] # exit function
             self.camera.control() # camera controls
 
             

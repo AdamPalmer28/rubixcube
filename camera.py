@@ -20,7 +20,7 @@ class camera3D:
 
         # movement parameters
         self.moving_speed = 0.02
-        self.rotation_speed = 0.005
+        self.rotation_speed = 0.01
 
     def control(self):
         "Handles camera movement from key input"
@@ -103,19 +103,23 @@ class camera3D:
         "Makes camera look at the origin (i.e. centre of render)"
         def calc_angle(a,b):
             "calcs exact angle"
+            if a == 0:
+                return (1 if b > 0 else - 1) * np.pi / 2
             return np.arctan(b / a) + (np.pi if a < 0 else 0)
 
-
-        x, y , z, _ = -self.postion # camera postion
+        x, y, z, _ = -self.postion # vector to origin
         fx, fy, fz, _ = self.forward # forward facing vector
 
-        # rotate x,z 
+        # rotate yaw 
         pos_angle = calc_angle(x, z)
         fwd_angle = calc_angle(fx, fz)
-        self.camera_yaw(pos_angle - fwd_angle)
+        self.camera_yaw((pos_angle - fwd_angle))
 
         # rotate pitch
-
+        fx, fy, fz, _ = self.forward # needs to be updated after rotation
+        pos_angle2 = np.arctan(y / abs(z))
+        fwd_angle2 = np.arctan(fy / abs(fz))
+        self.camera_pitch((pos_angle2 - fwd_angle2))
 
 
     def translate_mat(self):

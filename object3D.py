@@ -2,6 +2,15 @@ import numpy as np
 from matrix_ops import *
 import pygame as pg
 
+
+# improve np.any function
+from numba import njit
+@njit(fastmath = True)
+
+def any_fn( arr, a, b):
+    return np.any((arr == a) | (arr == b))
+
+
 class Object_3Dspace():
     
     def __init__(self, render):
@@ -19,8 +28,8 @@ class Object_3Dspace():
     def movement(self):
         "Example rotation"
         if self.movement_flag:
-            self.rotate_xz(0.01)
-        
+            #self.rotate_xz(0.01)
+            pass
 
     def draw(self):
         "Draws object to screen projection"
@@ -33,7 +42,6 @@ class Object_3Dspace():
         vertexes = vertexes @ self.render.projection.projection_mat
 
         vertexes /= vertexes[:,-1].reshape(-1,1) # normalises
-        #print(vertexes, np.shape(vertexes))
 
         vertexes[(vertexes > 2) | (vertexes < -2)] = 0 # Object clipping
 
@@ -45,7 +53,8 @@ class Object_3Dspace():
             color, face = color_face
             polygon = vertexes[face]
 
-            if not np.any((polygon == self.render.width //2) | (polygon == self.render.height //2)):
+            #if not np.any((polygon == self.render.width //2) | (polygon == self.render.height //2)):
+            if not any_fn(polygon, self.render.width //2, self.render.height //2):
                 pg.draw.polygon(self.render.screen, color, polygon, 3)
                 if self.label:
                     text = self.font.render(self.label[index], True, pg.Color('White'))
@@ -54,14 +63,31 @@ class Object_3Dspace():
         # draw vertices
         if self.draw_vertex:
             for vertex in vertexes:
-                if not np.any((vertex == self.render.width //2) | (vertex == self.render.height //2)):
+                if not any_fn(vertex, self.render.width //2, self.render.height //2):
                     pg.draw.circle(self.render.screen, pg.Color('white'), vertex, 6)
+
+
+    def get_center(self):
+        "Get center of object"
+        self.center = np.mean(self.vertex, axis = 0)
+        return self.center
 
     def tran_origin(self):
         "Translates object to the origin [0,0,0,1]"
-        self.center = np.mean(self.vertex, axis = 0)
-        (x,y,z,w) = self.center
+        #self.get_center()
+        (x,y,z,w) = self.get_center()
         self.translate((-x,-y,-z))
+
+    def distance(self):
+        "Calcs distance to camera"
+        #self.get_center() # update center value
+        dif = (self.render.camera.postion - self.get_center()) # vector between camera and centre
+
+        self.cam_dist = np.sqrt( (dif**2).sum() ) # Efficient distance/norm calc 
+
+        
+
+    # transformations
 
     def translate(self, pos):
         (x,y,z) = pos
@@ -83,7 +109,7 @@ class Object_3Dspace():
 
 
     def cube(self):
-        # Cordinate properties of a cube
+        # Cordinates of a 1x1x1 cube
         self.vertex = np.array([(0,0,0,1), (1,0,0,1), (1,0,1,1), (0,0,1,1),
                                 (0,1,0,1), (1,1,0,1), (1,1,1,1), (0,1,1,1)])
 
@@ -107,6 +133,12 @@ class Axes(Object_3Dspace):
         self.draw_vertex = False
         self.label = 'XYZ'
 
+class cube_block(Object_3Dspace):
+    "Sub class - individual cube blocks of the rubix cube"
+    def __init__(self, render):
+        super().__init__(render)
+
+        self.tran_origin() # starting postion at origin 
 
 
 
