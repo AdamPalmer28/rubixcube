@@ -1,5 +1,7 @@
 import numpy as np
 from object3D import *
+import collections
+
 
 class rubix_cube():
     """
@@ -18,6 +20,8 @@ class rubix_cube():
         self.block_interval_size = 0.25
         self.block_distances = 1 + self.block_interval_size
 
+        self.face_colors = ['yellow','red','blue','white','green','orange']
+
         self.intialise() # intialise cube blocks and camera postion
 
         # 6 faces centers 
@@ -28,8 +32,16 @@ class rubix_cube():
         
         self.cam_dist = [0,0,0,0,0,0]
 
-        self.model_cube_faces() # gets camera distances and segments blocs
+        self.face_colors = ['yellow','red','blue','white','green','#b34c07']
+        self.side_colors = [2,4,3,0,5,1]
 
+        self.model_cube_faces() # gets camera distances and segments blocs
+        for ind, face in enumerate(self.face_blocs):
+            for bloc in face:
+                color_ind = self.side_colors[ind]
+                bloc.colors[color_ind] = self.face_colors[color_ind]
+                
+                bloc.new_colors()
         
         
 
@@ -125,7 +137,7 @@ class rubix_cube():
 
         # classify the blocks
         self.face_blocs = [[],[],[],[],[],[]] # intialise faces bloc var 
-        
+
         for block in self.cube_blocks:
             bloc_pos = block.get_center()
             for ind, cord in enumerate(bloc_pos[:3]):
@@ -135,6 +147,7 @@ class rubix_cube():
                     ind = (2*ind + 1 if cord < 0 else 2*ind) # if negative assign to correct face
 
                     self.face_blocs[ind].append(block)
+
                     
 
 
@@ -142,20 +155,29 @@ class rubix_cube():
         # draws cube to screen
         self.model_cube_faces()
 
+
         face_dist = self.cam_dist.copy()
         face_dist.sort()
-        
-        min3 = (face_dist)[:3]
-        
+        min3 = face_dist[:3] # min 3 faces
+
+        # visable_blocs
+        self.vis_cubes = []
         for val in min3:
             ind = self.cam_dist.index(val)
-            for cube in self.face_blocs[ind]:
-                cube.draw()
+            self.vis_cubes += self.face_blocs[ind]
 
+        # calc dist
+        self.d_cubes = {}
+        for cube in self.vis_cubes:
 
-        #distances , cube_faces = self.
-        # for cube in self.cube_blocks:
-        #     cube.draw()
+            self.d_cubes[cube.distance()] = cube
 
+        sorted_cubes_keys = sorted(self.d_cubes.keys(), reverse=True)
+        self.vis_d_cubes =  {k: self.d_cubes[k] for k in  sorted_cubes_keys} 
+        
+        # draw cubes
+        for dist, cube in self.vis_d_cubes.items():
+            cube.draw()
 
-        # camera postion (adjust)
+        
+

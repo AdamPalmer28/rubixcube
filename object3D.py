@@ -21,8 +21,10 @@ class Object_3Dspace():
         
 
         self.font = pg.font.SysFont('Arial', 24, bold=True)
-        self.color_faces = [(pg.Color('orange'), face) for face in self.faces]
 
+        self.colors = ['#1f1e1e' for _ in range(6)]
+        self.color_faces = [(color, face) for color, face in zip(self.colors ,self.faces)]
+        
         self.movement_flag, self.draw_vertex = True, True
         self.solid_obj = True # solid polygons
         self.label = ''
@@ -35,6 +37,9 @@ class Object_3Dspace():
         if self.movement_flag:
             #self.rotate_xz(0.01)
             pass
+
+    def new_colors(self):
+        self.color_faces = [(color, face) for color, face in zip(self.colors ,self.faces)]
 
     def draw(self):
         "Draws object to screen projection"
@@ -103,8 +108,9 @@ class Object_3Dspace():
         "Calculates visable faces and vertexs"
         camera_postion = self.render.camera.postion
 
-        self.face_distance = {}
         # face distances
+        self.face_distance = {}
+
         for ind, (colour, face) in enumerate(self.color_faces):
             face_centre = np.mean(self.vertex[face], axis=0)
             dif = (face_centre - camera_postion)
@@ -136,16 +142,15 @@ class Object_3Dspace():
 
     def tran_origin(self):
         "Translates object to the origin [0,0,0,1]"
-        #self.get_center()
         (x,y,z,w) = self.get_center()
         self.translate((-x,-y,-z))
 
     def distance(self):
         "Calcs distance to camera"
-        #self.get_center() # update center value
         dif = (self.render.camera.postion - self.get_center()) # vector between camera and centre
 
         self.cam_dist = np.sqrt( (dif**2).sum() ) # Efficient distance/norm calc 
+        return self.cam_dist
 
         
 
@@ -184,6 +189,8 @@ class Object_3Dspace():
 
 
 
+# %% sub classes
+
 class Axes(Object_3Dspace):
     "Sub class of object, to draw object and world axes"
     def __init__(self, render):
@@ -204,7 +211,7 @@ class cube_block(Object_3Dspace):
     "Sub class - individual cube blocks of the rubix cube"
     def __init__(self, render):
         super().__init__(render)
-
+        self.draw_vertex = False
         self.tran_origin() # starting postion at origin 
 
 

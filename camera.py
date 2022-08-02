@@ -19,8 +19,10 @@ class camera3D:
         self.far_plane = 100
 
         # movement parameters
-        self.moving_speed = 0.02
-        self.rotation_speed = 0.01
+        self.moving_speed = 0.07
+        self.rotation_speed = 0.014
+
+        self.cin_mode = False
 
     def control(self):
         "Handles camera movement from key input"
@@ -69,8 +71,17 @@ class camera3D:
                     # reset camera to origin
                     self.look_origin()
 
+                if event.key == pg.K_9:
+                    # toggle cinematic mode
+                    self.cin_mode = not self.cin_mode
+
             elif event.type == pg.QUIT: # exit function
                 exit()
+
+        if self.cin_mode:
+            self.cinematic_mode()
+
+        
                 
         
 
@@ -121,6 +132,10 @@ class camera3D:
         fwd_angle2 = np.arctan(fy / abs(fz))
         self.camera_pitch((pos_angle2 - fwd_angle2))
 
+    def cinematic_mode(self):
+        "demo camera mode"
+        self.postion += self.right * self.moving_speed
+        self.look_origin()
 
     def translate_mat(self):
         x,y,z,w = self.postion
