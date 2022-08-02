@@ -36,15 +36,23 @@ class SoftwareRender:
         #self.world_axes.translate([0.0001, 0.0001, 0.0001])
 
         # rubix cube
-        self.rubix = rubix_cube(self, n = 3)
+        # self.rubix = rubix_cube(self, n = 3)
+
+        # test
+        self.test_cube = Object_3Dspace(self)
+        rubix_colours = ['white','red','green','blue','orange','yellow']
+        self.test_cube.color_faces = [(color, face) for color, face in zip(rubix_colours, self.test_cube.faces)]
 
     def draw(self):
         # collective draw function
         self.screen.fill(pg.Color('darkgrey')) # background
 
-        self.world_axes.draw() # world axes
+        # self.world_axes.draw() # world axes
 
-        self.rubix.draw()
+        #self.rubix.draw()
+
+        # test cube
+        self.test_cube.draw()
 
     def run(self):
         "[Driver function] run app/program"
@@ -53,7 +61,6 @@ class SoftwareRender:
             
             self.camera.control() # camera controls
 
-            
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name
             pg.display.flip() # update screen
