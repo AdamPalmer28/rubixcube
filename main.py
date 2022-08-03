@@ -9,6 +9,8 @@ from projection import *
 
 from cube_model import *
 
+
+
 class SoftwareRender:
 
     def __init__(self, camera_control = False) -> None:
@@ -40,7 +42,7 @@ class SoftwareRender:
         #self.world_axes.translate([0.0001, 0.0001, 0.0001])
 
         # rubix cube
-        self.rubix = rubix_cube(self, n = 8)
+        self.rubix = rubix_cube(self, n = 3)
 
         # test
         #self.test_cube = Object_3Dspace(self)

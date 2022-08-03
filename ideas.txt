@@ -1,0 +1,22 @@
+====================================================================================================
+####################################################################################################
+                            3D engine - rubix 
+####################################################################################################
+====================================================================================================
+
+
+Features to be added
+====================
+
+> rotating cube 
+    > animated
+
+
+Improvements to code
+====================
+
+> Individual cube calculations for the visable face are redundant as the cube model is already doing the same calc
+
+> Need to better document the functions
+
+> Need to improve calcs ability to deal with 0s -> add wrapper
