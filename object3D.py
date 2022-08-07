@@ -23,8 +23,8 @@ class Object_3Dspace():
         self.font = pg.font.SysFont('Arial', 24, bold=True)
 
         self.colors = ['#1f1e1e' for _ in range(6)]
-        self.color_faces = [(color, face) for color, face in zip(self.colors ,self.faces)]
-        
+        self.new_colors()
+
         self.movement_flag, self.draw_vertex = True, True
         self.solid_obj = True # solid polygons
         self.label = ''
@@ -40,7 +40,7 @@ class Object_3Dspace():
             pass
 
     def new_colors(self):
-        self.color_faces = [(color, face) for color, face in zip(self.colors ,self.faces)]
+        self.color_faces = np.array([(color, face) for color, face in zip(self.colors ,self.faces)])
 
     def draw(self, faces = False, vertex = False):
         "Draws object to screen projection"
@@ -53,8 +53,10 @@ class Object_3Dspace():
 
             else:
                 # avoids recalculation and relies on already calculated features
-                self.visable_faces = [(color, face) for ind, (color, face) in enumerate(self.color_faces) if ind in faces]
-
+                #self.visable_faces = [(color, face) for ind, (color, face) in enumerate(self.color_faces) if ind in faces]
+                
+                self.visable_faces = self.color_faces[faces]
+                
             
             if (self.draw_vertex) and (vertex is False):
                 # calc visable vertexs

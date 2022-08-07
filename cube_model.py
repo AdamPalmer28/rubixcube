@@ -141,14 +141,27 @@ class rubix_cube():
 
     def calc_vis_faces(self):
         "Calculates the visable faces - depending on the camera position"
-        self.visable_faces_ind = []
+        visable_faces_ind = []
         for ind, cord in enumerate(self.camera.postion[:3]):
 
             face_ind = (2 * ind + 1 if cord < 0 else 2 * ind)
-            self.visable_faces_ind.append(face_ind)
+            visable_faces_ind.append(face_ind)
+        visable_faces_ind = np.array(visable_faces_ind)
 
-    
+        # distances - calcs
+        vis_face_cen = self.face_centers[visable_faces_ind]
+        cam_dist = []
+        cam_pos = self.camera.postion
+        for ind, face in enumerate(vis_face_cen):
+            dif = (cam_pos - face) # vector between camera and centre
 
+            cam_dist.append(np.sqrt( (dif**2).sum() ) )# Efficient distance/norm calc 
+        
+        
+        # distance_order
+        face_order = np.argsort(cam_dist)
+        self.visable_faces_ind = visable_faces_ind[face_order[::-1]]
+        
 
 
     def draw(self):

@@ -82,8 +82,6 @@ class camera3D:
             self.cinematic_mode()
 
         
-                
-        
 
     def camera_yaw(self,angle):
         # rotate arround y cord (vertical axis)
@@ -95,7 +93,7 @@ class camera3D:
         self.up = self.up @ rotate
 
     def camera_pitch(self,angle):
-        # rotate camera up and down arround the self.right vector
+        # rotate camera up and down around the self.right vector
 
         # correction
         (x,y,z,w) = self.right
@@ -114,26 +112,30 @@ class camera3D:
         "Makes camera look at the origin (i.e. centre of render)"
         def calc_angle(a,b):
             "calcs exact angle"
-            if a == 0:
+            if abs(a) <= 0.0001:
                 return (1 if b > 0 else - 1) * np.pi / 2
             return np.arctan(b / a) + (np.pi if a < 0 else 0)
 
         x, y, z, _ = -self.postion # vector to origin
         fx, fy, fz, _ = self.forward # forward facing vector
 
-        # rotate yaw 
+        # rotate yaw (left and right)
         pos_angle = calc_angle(x, z)
         fwd_angle = calc_angle(fx, fz)
-        self.camera_yaw((pos_angle - fwd_angle))
+        self.camera_yaw((pos_angle - fwd_angle)) 
 
-        # rotate pitch
+        # rotate pitch (up and down)
         fx, fy, fz, _ = self.forward # needs to be updated after rotation
-        pos_angle2 = np.arctan(y / abs(z))
-        fwd_angle2 = np.arctan(fy / abs(fz))
-        self.camera_pitch((pos_angle2 - fwd_angle2))
+
+        dist = np.sqrt(x**2 + z**2) 
+        fdist = np.sqrt(fx**2 + fz**2)
+
+        pos_angle2 = np.arctan(y / dist)
+        fwd_angle2 = np.arctan(fy / fdist)
+        self.camera_pitch((pos_angle2 - fwd_angle2)) 
 
     def cinematic_mode(self):
-        "demo camera mode"
+        "demo camera mode - single step"
         self.postion += self.right * self.moving_speed
         self.look_origin()
 
