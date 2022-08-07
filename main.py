@@ -14,7 +14,7 @@ from cube_model import *
 class SoftwareRender:
 
     def __init__(self, camera_control = False) -> None:
-        self.res = self.width, self.height = 1680, 945 #1200, 800
+        self.res = self.width, self.height = 1200, 800 #1680, 945 #1200, 800
         self.FPS = 60
         self.screen = pg.display.set_mode(self.res)
         self.clock = pg.time.Clock()
@@ -45,9 +45,10 @@ class SoftwareRender:
         self.rubix = rubix_cube(self, n = 3)
 
         # test
-        #self.test_cube = Object_3Dspace(self)
-        #rubix_colours = ['yellow','red','blue','white','green','orange']
-        #self.test_cube.color = rubix_colours
+        # self.test_cube = Object_3Dspace(self)
+        # rubix_colours = ['red','#b34c07','white','yellow','blue','green']
+        # self.test_cube.colors = rubix_colours
+        # self.test_cube.new_colors()
 
     def draw(self):
         # collective draw function

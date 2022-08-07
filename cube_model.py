@@ -20,7 +20,7 @@ class rubix_cube():
         self.block_interval_size = 0.25
         self.block_distances = 1 + self.block_interval_size
 
-        self.face_colors = ['yellow','red','blue','white','green','orange']
+        #self.face_colors = ['yellow','red','blue','white','green','orange']
 
         self.intialise() # intialise cube blocks and camera postion
 
@@ -30,21 +30,18 @@ class rubix_cube():
                                         (0, 0, self.outter_center, 1), (0, 0, -self.outter_center, 1),
                                     ])
         
-        self.cam_dist = [0,0,0,0,0,0]
+        self.face_colors = ['blue','green','white','yellow','#b34c07','red']
 
-        self.face_colors = ['yellow','red','blue','white','green','#b34c07']
-        self.side_colors = [2,4,3,0,5,1]
+        self.cam_dist = [0,0,0,0,0,0]
 
         self.model_cube_faces() # gets camera distances and segments blocs
         for ind, face in enumerate(self.face_blocs):
             for bloc in face:
-                color_ind = self.side_colors[ind]
-                bloc.colors[color_ind] = self.face_colors[color_ind]
-                
+                #print(ind, bloc.get_center())
+                bloc.colors[ind] = self.face_colors[ind]
+
                 bloc.new_colors()
         
-        
-
 
     def intialise(self):
         "Intialise the cube postion and camera postion"
@@ -127,15 +124,9 @@ class rubix_cube():
             cube.get_center()
 
     def model_cube_faces(self):
-        "Segements the blocks into cube model faces, with associated distance to each face"
+        "Segements the blocks into cube model faces"
 
-        # face distances
-        for ind, face in enumerate(self.face_centers):
-            dif = (face - self.camera.postion) # vector between camera and centre
-            self.cam_dist[ind] = np.sqrt( (dif ** 2).sum() ) # update distance
-
-
-        # classify the blocks
+        # classify the blocks - only necessary after movement
         self.face_blocs = [[],[],[],[],[],[]] # intialise faces bloc var 
 
         for block in self.cube_blocks:
@@ -145,26 +136,32 @@ class rubix_cube():
                 if abs(cord) == self.outter_center:
 
                     ind = (2*ind + 1 if cord < 0 else 2*ind) # if negative assign to correct face
-
+                    
                     self.face_blocs[ind].append(block)
 
-                    
+    def calc_vis_faces(self):
+        "Calculates the visable faces - depending on the camera position"
+        self.visable_faces_ind = []
+        for ind, cord in enumerate(self.camera.postion[:3]):
+
+            face_ind = (2 * ind + 1 if cord < 0 else 2 * ind)
+            self.visable_faces_ind.append(face_ind)
+
+    
+
 
 
     def draw(self):
         # draws cube to screen
-        self.model_cube_faces()
+        self.model_cube_faces() # only necessary after rubix movement
 
-
-        face_dist = self.cam_dist.copy()
-        face_dist.sort()
-        min3 = face_dist[:3] # min 3 faces
+        self.calc_vis_faces() # only necessary after camera movement
 
         # visable_blocs
         self.vis_cubes = []
-        for val in min3:
-            ind = self.cam_dist.index(val)
-            self.vis_cubes += self.face_blocs[ind]
+        for face_ind in self.visable_faces_ind:
+            self.vis_cubes += self.face_blocs[face_ind]
+
 
         # calc dist
         self.d_cubes = {}
@@ -177,7 +174,7 @@ class rubix_cube():
         
         # draw cubes
         for dist, cube in self.vis_d_cubes.items():
-            cube.draw()
+            cube.draw(faces = self.visable_faces_ind)
 
         
 

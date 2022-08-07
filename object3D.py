@@ -29,8 +29,9 @@ class Object_3Dspace():
         self.solid_obj = True # solid polygons
         self.label = ''
 
-        self.calc_visable()
-        self.max_vertex = 0
+        self.calc_visable_faces() # calc visable faces
+        self.calc_visable_vertex() # calc visable vertexs
+
 
     def movement(self):
         "Example rotation"
@@ -41,12 +42,27 @@ class Object_3Dspace():
     def new_colors(self):
         self.color_faces = [(color, face) for color, face in zip(self.colors ,self.faces)]
 
-    def draw(self):
+    def draw(self, faces = False, vertex = False):
         "Draws object to screen projection"
         # calc furthest vertex
 
         if self.solid_obj:
-            self.calc_visable() # calc visable parts of the object 
+            if faces is False:
+                # calc visable faces
+                self.calc_visable_faces() 
+
+            else:
+                # avoids recalculation and relies on already calculated features
+                self.visable_faces = [(color, face) for ind, (color, face) in enumerate(self.color_faces) if ind in faces]
+
+            
+            if (self.draw_vertex) and (vertex is False):
+                # calc visable vertexs
+                self.calc_visable_vertex() 
+            else:
+                # avoids recalculation
+                pass
+             
 
         self.screen_projection()
         self.movement()
@@ -104,8 +120,8 @@ class Object_3Dspace():
                     pg.draw.circle(self.render.screen, pg.Color('white'), vertex, 6)
 
 
-    def calc_visable(self):
-        "Calculates visable faces and vertexs"
+    def calc_visable_faces(self):
+        "Calculates visable faces"
         camera_postion = self.render.camera.postion
 
         # face distances
@@ -121,6 +137,10 @@ class Object_3Dspace():
 
         closest_faces_keys = sorted(self.face_distance.keys(), reverse=True)[3:]
         self.visable_faces = [(self.face_distance[dist]) for dist in closest_faces_keys]
+
+    def calc_visable_vertex(self):
+        "Calculates visable vertexs"
+        camera_postion = self.render.camera.postion
 
         # vertex distances
         max_v_dist = 0
@@ -183,8 +203,10 @@ class Object_3Dspace():
         self.edges = np.array([(0,1), (0,4), (0,3), (1,5), (1,2), (2,3),
                                (2,6), (3,7), (4,5), (4,7), (5,6), (6,7)])
 
-        self.faces = np.array([(0,1,2,3), (0,1,5,4), (1,2,6,5),
-                               (4,5,6,7), (0,4,7,3), (2,3,7,6)])
+        # faces align with cube_model faces
+        self.faces = np.array([(1,2,6,5), (0,4,7,3), 
+                            (4,5,6,7), (0,1,2,3),
+                            (2,3,7,6), (0,1,5,4)])
 
 
 
