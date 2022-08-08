@@ -15,10 +15,4 @@ Features to be added
 Improvements to code
 ====================
 
-> camera .lookorigin is not good for the y coordinate
-
 > Need to better document the functions
-
-> Need to improve calcs ability to deal with 0's -> add wrapper
-
-> Add cprofile code evaluator

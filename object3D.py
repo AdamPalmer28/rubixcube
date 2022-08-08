@@ -40,7 +40,7 @@ class Object_3Dspace():
             pass
 
     def new_colors(self):
-        self.color_faces = np.array([(color, face) for color, face in zip(self.colors ,self.faces)])
+        self.color_faces = np.array([(color, face) for color, face in zip(self.colors ,self.faces)], dtype=object)
 
     def draw(self, faces = False, vertex = False):
         "Draws object to screen projection"

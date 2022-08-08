@@ -72,7 +72,6 @@ class SoftwareRender:
 
             self.camera.control() # camera control
 
-            
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name
             pg.display.flip() # update screen
@@ -83,4 +82,22 @@ class SoftwareRender:
 if __name__ == '__main__':
     render = SoftwareRender(camera_control=True)
 
-    render.run()
+    
+    # == Optermisation ==
+    import cProfile
+    import pstats
+
+    #render.run()
+    cProfile.run("render.run()", "code_analysis/output.dat")
+    
+    with open("code_analysis/output_time.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("time").print_stats()
+    
+    with open("code_analysis/output_calls.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("calls").print_stats()
+
+    with open("code_analysis/output_ctime.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("cumulative ").print_stats()
