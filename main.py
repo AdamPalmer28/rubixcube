@@ -10,9 +10,8 @@ from projection import *
 from cube_model import *
 
 
-
 class SoftwareRender:
-
+    "App rendering"
     def __init__(self, camera_control = False) -> None:
         self.res = self.width, self.height = 1200, 800 #1680, 945 #1200, 800
         self.FPS = 60
@@ -56,7 +55,6 @@ class SoftwareRender:
 
         self.rubix.draw()
         
-        
         # self.world_axes.draw() # world axes
 
         # test cube
@@ -67,11 +65,8 @@ class SoftwareRender:
         "[Driver function] run app/program"
         while True:
             self.draw()
-            
-            #if self.camera_control:
 
             self.camera.control() # camera control
-
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name
             pg.display.flip() # update screen
@@ -100,4 +95,4 @@ if __name__ == '__main__':
 
     with open("code_analysis/output_ctime.txt","w") as f:
         p = pstats.Stats("code_analysis/output.dat", stream=f)
-        p.sort_stats("cumulative ").print_stats()
+        p.sort_stats("cumulative").print_stats()
