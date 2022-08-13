@@ -10,11 +10,17 @@ from camera_calcs.projection import *
 from objects.object3D import *
 from objects.cube_model import *
 
+<<<<<<< HEAD
 from controls import control3D
 
 class SoftwareRender:
 
     def __init__(self) -> None:
+=======
+class SoftwareRender:
+    "App rendering"
+    def __init__(self, camera_control = False) -> None:
+>>>>>>> f7c99eda1683f02522e21d9d1a6f51044770e801
         self.res = self.width, self.height = 1200, 800 #1680, 945 #1200, 800
         self.FPS = 60
         self.screen = pg.display.set_mode(self.res)
@@ -58,7 +64,6 @@ class SoftwareRender:
 
         self.rubix.draw()
         
-        
         # self.world_axes.draw() # world axes
 
         # test cube
@@ -69,10 +74,14 @@ class SoftwareRender:
         "[Driver function] run app/program"
         while True:
             self.draw()
+<<<<<<< HEAD
             
             self.controls.camera_controls() # camera control
             #self.camera.control() # camera control
+=======
 
+            self.camera.control() # camera control
+>>>>>>> f7c99eda1683f02522e21d9d1a6f51044770e801
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name
             pg.display.flip() # update screen
