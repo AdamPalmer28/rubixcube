@@ -3,17 +3,18 @@
 import numpy as np
 import pygame as pg
 
-from object3D import *
-from camera import *
-from projection import *
 
-from cube_model import *
+from camera_calcs.camera import camera3D
+from camera_calcs.projection import *
 
+from objects.object3D import *
+from objects.cube_model import *
 
+from controls import control3D
 
 class SoftwareRender:
 
-    def __init__(self, camera_control = False) -> None:
+    def __init__(self) -> None:
         self.res = self.width, self.height = 1200, 800 #1680, 945 #1200, 800
         self.FPS = 60
         self.screen = pg.display.set_mode(self.res)
@@ -21,8 +22,9 @@ class SoftwareRender:
 
         self.create_objects()
 
-        self.camera_control = camera_control
-        self.fix_cam = False
+        self.controls = control3D(self)
+
+
 
         
     def create_objects(self):
@@ -68,9 +70,8 @@ class SoftwareRender:
         while True:
             self.draw()
             
-            #if self.camera_control:
-
-            self.camera.control() # camera control
+            self.controls.camera_controls() # camera control
+            #self.camera.control() # camera control
 
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name
@@ -80,7 +81,7 @@ class SoftwareRender:
 
 
 if __name__ == '__main__':
-    render = SoftwareRender(camera_control=True)
+    render = SoftwareRender()
 
     
     # == Optermisation ==
@@ -100,4 +101,4 @@ if __name__ == '__main__':
 
     with open("code_analysis/output_ctime.txt","w") as f:
         p = pstats.Stats("code_analysis/output.dat", stream=f)
-        p.sort_stats("cumulative ").print_stats()
+        p.sort_stats("cumulative").print_stats()

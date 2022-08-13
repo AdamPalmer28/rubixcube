@@ -1,5 +1,5 @@
 import numpy as np
-from object3D import *
+from .object3D import *
 import collections
 
 
