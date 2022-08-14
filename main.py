@@ -68,8 +68,7 @@ class SoftwareRender:
         while True:
             self.draw()
             
-            self.controls.controls() # camera control
-            #self.controls.control_rubix() # rubix controls
+            self.controls.controls() # control scripts
 
 
             pg.display.set_caption(str(self.clock.get_fps())) # display fps in window name

@@ -26,50 +26,13 @@ class control3D:
 
     def controls(self):
         "Handles camera movement from key input"
-        # camera postion and orientation
+        # [update] camera postion and orientation
         self.postion = self.camera.postion
 
         self.right = self.camera.right
         self.forward = self.camera.forward
 
-        key = pg.key.get_pressed()
-
-         # --===<[ Movement ]>===--
-
-        # left / right
-        if key[pg.K_a]:
-            self.postion -= self.right * self.moving_speed
-        if key[pg.K_d]:
-            self.postion += self.right * self.moving_speed
-
-        # forward / backwards
-        if key[pg.K_w]:
-            self.postion += self.forward * self.moving_speed
-        if key[pg.K_s]:
-            self.postion -= self.forward * self.moving_speed
-
-        # up / down
-        if key[pg.K_SPACE]:
-            self.postion += np.array([0,1,0,1]) * self.moving_speed
-            #self.postion += self.up * self.moving_speed
-        if key[pg.K_LCTRL]:
-            self.postion -= np.array([0,1,0,1]) * self.moving_speed
-            #self.postion -= self.up * self.moving_speed
-
-
-        # --===<[ Rotations ]>===--
-
-        # left / right rotation
-        if key[pg.K_LEFT]:
-            self.camera.camera_yaw(self.rotation_speed)
-        if key[pg.K_RIGHT]:
-            self.camera.camera_yaw(-self.rotation_speed)
-        # up / down rotation
-        if key[pg.K_UP]:
-            self.camera.camera_pitch(self.rotation_speed)
-        if key[pg.K_DOWN]:
-            self.camera.camera_pitch(-self.rotation_speed)
-
+        self.basic_cam_controls() # camera controls
 
         for event in pg.event.get():
             # single press controls
@@ -87,6 +50,9 @@ class control3D:
                     # reset rubix cube
                     self.rubix.intialise()
 
+                # =====================================
+                # Rotations
+                # =====================================
                 # rotate xy
                 if event.key == pg.K_1:
                     self.rubix.model_rotate_xy(ind = 0)
@@ -121,13 +87,42 @@ class control3D:
         self.postion += self.right * self.moving_speed # moves right
         self.camera.look_origin() # camera looks origin
 
-    def control_rubix(self):
-        "Controls the movement (rotation) controls of the rubix cube"
-        for event in pg.event.get():
-            # single press controls
-            print("here")
-            if event.type == pg.KEYDOWN:
-                print("key_down")
-                if event.key == pg.K_1:
-                    print("1")
-                    self.rubix.rotate(axis = 0, ind = 0)
+    def basic_cam_controls(self):
+        key = pg.key.get_pressed()
+
+         # --===<[ Movement ]>===--
+
+        # left / right
+        if key[pg.K_a]:
+            self.postion -= self.right * self.moving_speed
+        if key[pg.K_d]:
+            self.postion += self.right * self.moving_speed
+
+        # forward / backwards
+        if key[pg.K_w]:
+            self.postion += self.forward * self.moving_speed
+        if key[pg.K_s]:
+            self.postion -= self.forward * self.moving_speed
+
+        # up / down
+        if key[pg.K_SPACE]:
+            self.postion += np.array([0,1,0,1]) * self.moving_speed
+        if key[pg.K_LCTRL]:
+            self.postion -= np.array([0,1,0,1]) * self.moving_speed
+
+
+        # --===<[ Rotations ]>===--
+
+        # left / right rotation
+        if key[pg.K_LEFT]:
+            self.camera.camera_yaw(self.rotation_speed)
+        if key[pg.K_RIGHT]:
+            self.camera.camera_yaw(-self.rotation_speed)
+        # up / down rotation
+        if key[pg.K_UP]:
+            self.camera.camera_pitch(self.rotation_speed)
+        if key[pg.K_DOWN]:
+            self.camera.camera_pitch(-self.rotation_speed)
+
+
+        
