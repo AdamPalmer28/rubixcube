@@ -186,13 +186,13 @@ class Object_3Dspace():
         self.vertex = self.vertex @ scale(scale_con)
     
     def rotate_xy(self, angle):
-        self.vertex = self.vertex @ rotate_xy(angle)
+        self.vertex = np.round(self.vertex @ rotate_xy(angle) , 4)
 
     def rotate_xz(self, angle):
-        self.vertex = self.vertex @ rotate_xz(angle)
+        self.vertex = np.round(self.vertex @ rotate_xz(angle) , 4)
 
     def rotate_yz(self, angle):
-        self.vertex = self.vertex @ rotate_yz(angle)
+        self.vertex = np.round(self.vertex @ rotate_yz(angle) , 4)
 
 
 

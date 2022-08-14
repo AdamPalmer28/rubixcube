@@ -1,3 +1,5 @@
+"Class for the 3D rubix model - depnds on object3D"
+
 import numpy as np
 from .object3D import *
 import collections
@@ -20,45 +22,23 @@ class rubix_cube():
         self.block_interval_size = 0.25
         self.block_distances = 1 + self.block_interval_size
 
-        self.intialise() # intialise cube blocs postions and colours
-
+        # Create cube objects
+        self.outter_edge = self.n / 2 + (self.n - 1) / 2 * self.block_interval_size
+        self.outter_center = self.outter_edge - 0.5 # assuming 0.5 = block size / 2
+        
         # 6 faces centers 
         self.face_centers = np.array([(self.outter_center, 0, 0, 1), (-self.outter_center, 0, 0, 1),
                                         (0, self.outter_center, 0, 1), (0, -self.outter_center, 0, 1),
                                         (0, 0, self.outter_center, 1), (0, 0, -self.outter_center, 1),
                                     ])
-        
-        self.face_colors = ['blue','green','white','yellow','#b34c07','red']
+        self.face_colors = ['blue','green','white','yellow','#eb6207','red']
 
         self.cam_dist = [0,0,0,0,0,0]
-
-        self.model_cube_layers() # gets segments blocs
-
-        for ind, face in enumerate(self.face_blocs):
-            for bloc in face:
-                #print(ind, bloc.get_center())
-                bloc.colors[ind] = self.face_colors[ind]
-
-                bloc.new_colors()
         
+        self.intialise() # intialise cube blocs postions and colours
 
-    # will be redundant after cube layers is finished
-    def model_cube_faces(self):
-        "Segements the blocks into cube model faces"
 
-        # classify the blocks - only necessary after movement
-        self.face_blocs = [[],[],[],[],[],[]] # intialise faces bloc var 
-
-        for block in self.cube_blocks:
-            bloc_pos = block.get_center()
-            for ind, cord in enumerate(bloc_pos[:3]):
-                # outter block detection
-                if abs(cord) == self.outter_center:
-
-                    ind = (2*ind + 1 if cord < 0 else 2*ind) # if negative assign to correct face
-                    
-                    self.face_blocs[ind].append(block)
-
+    # this isnt working right!!!
     def model_cube_layers(self):
         "Segments into cube into layers" 
         self.blocks_xy = [[] for _ in range(self.n)] # segments cube blocks into xy rows
@@ -73,7 +53,7 @@ class rubix_cube():
                 layer = self.layers[ind] # relevant postion layer
 
                 layer_ind = int((i + self.outter_center) // self.block_distances) # postion in layer
-                print(pos, i, layer_ind)
+                
                 layer[layer_ind].append(cube) # appends cube to relevant layers
 
         # face blocs
@@ -82,6 +62,7 @@ class rubix_cube():
         self.face_blocs[0], self.face_blocs[1] = self.blocks_yz[-1], self.blocks_yz[0] # blue, green
         self.face_blocs[2], self.face_blocs[3] = self.blocks_xz[-1], self.blocks_xz[0] # white, yellow
         self.face_blocs[4], self.face_blocs[5] = self.blocks_xy[-1], self.blocks_xy[0] # orange, red
+
             
 
     def calc_vis_faces(self):
@@ -93,7 +74,7 @@ class rubix_cube():
             visable_faces_ind.append(face_ind)
         visable_faces_ind = np.array(visable_faces_ind)
 
-        # distances - calcs
+        # distances to faces - calcs
         vis_face_cen = self.face_centers[visable_faces_ind]
         cam_dist = []
         cam_pos = self.camera.postion
@@ -108,7 +89,6 @@ class rubix_cube():
 
     def draw(self):
         # draws cube to screen
-        # self.model_cube_faces() # only necessary after rubix movement
         # self.model_cube_layers() # only necessary after rubix movement
 
         self.calc_vis_faces() # only necessary after camera movement
@@ -130,11 +110,38 @@ class rubix_cube():
         
         # draw cubes
         for dist, cube in self.vis_d_cubes.items():
-            cube.draw(faces = self.visable_faces_ind)
+            cube.draw(faces = False)
 
-    def rotate(self, axis, ind):
-        "rotation for the cube model"
-        passgit
+
+    # Rotation of the cube
+    # ====================
+    def model_rotate_xy(self, ind: int):
+        "rotation xy for the cube model"
+
+        layer = self.blocks_xy[ind] # cubes to be rotated
+        layer = self.layers[2][ind]
+        for cube in layer:
+            cube.rotate_xy(np.pi/2)
+
+        self.model_cube_layers() # recalc cube layers
+ 
+    def model_rotate_xz(self, ind: int):
+        "rotation xz for the cube model"
+
+        layer = self.blocks_xz[ind] # cubes to be rotated
+        for cube in layer:
+            cube.rotate_xz(np.pi/2)
+
+        self.model_cube_layers() # recalc cube layers    
+    
+    def model_rotate_yz(self, ind: int):
+        "rotation yz for the cube model"
+
+        layer = self.blocks_yz[ind] # cubes to be rotated
+        for cube in layer:
+            cube.rotate_yz(np.pi/2)
+
+        self.model_cube_layers() # recalc cube layers
 
 
     # only run at the start of the model
@@ -142,13 +149,6 @@ class rubix_cube():
         "Intialise the cube postions in the rubix cube along with the associated colours"
 
         self.cube_blocks = [] # all cube blocks
-
-        # each list will have length n - n lists of blocks coresponding to each turnable section
-
-
-        # Create cube objects
-        self.outter_edge = self.n / 2 + (self.n - 1) / 2 * self.block_interval_size
-        self.outter_center = self.outter_edge - 0.5 # assuming 0.5 = block size / 2
 
         # bottom / top of rubix cube
         bottom = np.array([-self.outter_center, -self.outter_center, -self.outter_center])
@@ -209,6 +209,16 @@ class rubix_cube():
 
         for cube in self.cube_blocks:
             cube.get_center()
+
+
+        self.model_cube_layers() # gets segments blocs
+
+        # set up colours
+        for ind, face in enumerate(self.face_blocs):
+            for bloc in face:
+                bloc.colors[ind] = self.face_colors[ind]
+
+                bloc.new_colors()
      
 
 if __name__ == '__main__':

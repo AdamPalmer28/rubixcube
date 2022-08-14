@@ -10,6 +10,7 @@ class control3D:
 
         self.render = render
         self.camera = render.camera
+        self.rubix = render.rubix
 
         # camera postion and orientation
         self.postion = self.camera.postion
@@ -17,14 +18,13 @@ class control3D:
         self.right = self.camera.right
         self.forward = self.camera.forward
 
-
         # camera speeds
         self.moving_speed = 0.07
         self.rotation_speed = 0.014
 
-        self.cin_mode = False
+        self.cin_mode = False # toggle cinematic mode
 
-    def camera_controls(self):
+    def controls(self):
         "Handles camera movement from key input"
         # camera postion and orientation
         self.postion = self.camera.postion
@@ -75,13 +75,40 @@ class control3D:
             # single press controls
             if event.type == pg.KEYDOWN:
 
-                if event.key == pg.K_0:
+                if event.key == pg.K_x:
                     # reset camera to origin
                     self.camera.look_origin()
 
-                if event.key == pg.K_9:
+                if event.key == pg.K_c:
                     # toggle cinematic mode
                     self.cin_mode = not self.cin_mode
+
+                if event.key == pg.K_r:
+                    # reset rubix cube
+                    self.rubix.intialise()
+
+                # rotate xy
+                if event.key == pg.K_1:
+                    self.rubix.model_rotate_xy(ind = 0)
+                if event.key == pg.K_2:
+                    self.rubix.model_rotate_xy(ind = 1)                
+                if event.key == pg.K_3:
+                    self.rubix.model_rotate_xy(ind = 2)   
+                # rotate xz
+                if event.key == pg.K_4:
+                    self.rubix.model_rotate_xz(ind = 0)
+                if event.key == pg.K_5:
+                    self.rubix.model_rotate_xz(ind = 1)                
+                if event.key == pg.K_6:
+                    self.rubix.model_rotate_xz(ind = 2)
+                # rotate yz
+                if event.key == pg.K_7:
+                    self.rubix.model_rotate_yz(ind = 0)
+                if event.key == pg.K_8:
+                    self.rubix.model_rotate_yz(ind = 1)                
+                if event.key == pg.K_9:
+                    self.rubix.model_rotate_yz(ind = 2)               
+
 
             elif event.type == pg.QUIT: # exit function
                 exit()
@@ -90,6 +117,17 @@ class control3D:
             self.cinematic_mode()
 
     def cinematic_mode(self):
-        "demo camera mode - single step"
-        self.postion += self.right * self.moving_speed
-        self.camera.look_origin()
+        "cinematic camera mode - single step"
+        self.postion += self.right * self.moving_speed # moves right
+        self.camera.look_origin() # camera looks origin
+
+    def control_rubix(self):
+        "Controls the movement (rotation) controls of the rubix cube"
+        for event in pg.event.get():
+            # single press controls
+            print("here")
+            if event.type == pg.KEYDOWN:
+                print("key_down")
+                if event.key == pg.K_1:
+                    print("1")
+                    self.rubix.rotate(axis = 0, ind = 0)

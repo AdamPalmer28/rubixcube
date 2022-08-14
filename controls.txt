@@ -1,0 +1,45 @@
+Controls for the rubix cube 
+
+=============================
+    Movement
+=============================
+w - forwards
+a - left
+s - back
+d - right
+spacebar - up
+l_ctrl - down
+
+=============================
+    Camera
+=============================
+kp_left - look left
+kp_right - look right
+kp_up - look up
+kp_down - look down
+
+=============================
+    Misc camera controls
+=============================
+x - look at origin (rubix cube)
+c - toggle cinematic mode
+
+
+=============================
+    Rubix controls (n = 3)
+=============================
+
+rotation controls:
+    1 - rotate layer 1 of xy
+    2 - rotate layer 2 of xy
+    3 - rotate layer 3 of xy
+
+    4 - rotate layer 1 of xz
+    5 - rotate layer 2 of xz
+    6 - rotate layer 3 of xz
+
+    7 - rotate layer 1 of yz
+    8 - rotate layer 2 of yz
+    9 - rotate layer 3 of yz
+
+r - reset cube
