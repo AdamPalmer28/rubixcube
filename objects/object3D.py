@@ -121,7 +121,7 @@ class Object_3Dspace():
                 if not any_fn(vertex, self.render.width //2, self.render.height //2):
                     pg.draw.circle(self.render.screen, pg.Color('white'), vertex, 6)
 
-
+    # should re design it - using arg sort insead of sorted dict
     def calc_visable_faces(self):
         "Calculates visable faces"
         camera_postion = self.render.camera.postion

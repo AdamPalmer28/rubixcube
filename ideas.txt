@@ -8,11 +8,10 @@
 Features to be added
 ====================
 
-> rotating cube 
-    > animated
+> animated rubix cube
 
 
 Improvements to code
 ====================
 
-> Need to better document the functions
+> redesign obkect3D - calc_visable_faces function
